@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="DurgaCure LLP - Pharmaceutical distribution, C&F, super stockist and healthcare products." />
+  <title>DurgaCure LLP | Healthcare Distribution</title>
+  <style>
+    :root {
+      --primary: #173b57;
+      --accent: #d89b2b;
+      --text: #24313a;
+      --muted: #6b7680;
+      --light: #f6f8fa;
+      --white: #ffffff;
+      --border: #e4e9ed;
+      --shadow: 0 12px 30px rgba(23, 59, 87, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, 92%); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: .2px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #2f6e91);
+      color: var(--white);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #43515b;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at 85% 20%, rgba(216,155,43,.16), transparent 27%),
+        linear-gradient(135deg, #f8fbfd 0%, #ffffff 58%, #f8f4ea 100%);
+      padding: 96px 0 86px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: center;
+      gap: 56px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--accent);
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 1.02;
+      color: var(--primary);
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      max-width: 670px;
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+
+    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 9px;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-secondary { border-color: var(--primary); color: var(--primary); background: var(--white); }
+
+    .hero-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h3 { color: var(--primary); margin-bottom: 14px; font-size: 24px; }
+    .hero-card ul { list-style: none; display: grid; gap: 14px; }
+    .hero-card li {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .hero-card li:last-child { border-bottom: 0; }
+    .check {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #eef5f8; color: var(--primary);
+      display: grid; place-items: center; flex: 0 0 auto; font-size: 13px; font-weight: 900;
+    }
+
+    section { padding: 84px 0; }
+    .section-title { max-width: 760px; margin-bottom: 40px; }
+    .section-title span { color: var(--accent); font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: 1px; }
+    .section-title h2 { color: var(--primary); font-size: clamp(30px, 4vw, 46px); line-height: 1.15; margin: 8px 0 14px; }
+    .section-title p { color: var(--muted); }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 42px; align-items: start; }
+    .about-copy p + p { margin-top: 16px; }
+    .about-box {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+    }
+    .about-box strong { color: var(--primary); }
+
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      background: var(--white);
+      transition: .2s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 20px; }
+    .card p { color: var(--muted); font-size: 15px; }
+
+    .light-section { background: var(--light); }
+    .pill-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+    .pill {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      color: #3f4a52;
+    }
+
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .why {
+      padding: 24px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 16px;
+      min-height: 180px;
+    }
+    .why h3 { margin-bottom: 10px; }
+    .why p { color: rgba(255,255,255,.78); font-size: 14px; }
+
+    .contact-wrap {
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 24px;
+      padding: 42px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 34px;
+      align-items: center;
+    }
+    .contact-wrap h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.15; margin-bottom: 12px; }
+    .contact-wrap p { color: rgba(255,255,255,.78); }
+    .contact-list { display: grid; gap: 12px; font-size: 15px; }
+    .contact-list strong { color: #f3c769; }
+
+    footer {
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      nav ul { display: none; }
+      .hero { padding-top: 72px; }
+      .hero-grid, .about-grid, .contact-wrap { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      h1 { letter-spacing: -1px; }
+      section { padding: 64px 0; }
+      .why-grid { grid-template-columns: 1fr; }
+      .hero-card, .contact-wrap { padding: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home">
+        <div class="brand-mark">DC</div>
+        <div>DurgaCure LLP</div>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#business">Business</a></li>
+          <li><a href="#categories">Categories</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Healthcare Distribution & Trade</span>
+          <h1>Reliable healthcare distribution, built for growth.</h1>
+          <p>DurgaCure LLP is focused on the distribution, supply and marketing of pharmaceutical, nutraceutical, surgical and allied healthcare products, with a commitment to dependable service and long-term business relationships.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#business">Explore Our Business</a>
+            <a class="btn btn-secondary" href="#contact">Contact Us</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h3>Our Focus</h3>
+          <ul>
+            <li><span class="check">✓</span><div><strong>Pharmaceutical Distribution</strong><br><small>Efficient supply of medicines and healthcare products.</small></div></li>
+            <li><span class="check">✓</span><div><strong>C&F / Super Stockist Operations</strong><br><small>Supporting principals with dependable regional distribution.</small></div></li>
+            <li><span class="check">✓</span><div><strong>Healthcare Product Expansion</strong><br><small>Nutraceuticals, surgicals and allied product categories.</small></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-title">
+          <span>About Us</span>
+          <h2>A modern distribution company for the healthcare ecosystem.</h2>
+          <p>Built with a long-term vision to create a trusted distribution platform for healthcare companies, retailers, institutions and business partners.</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-copy">
+            <p>DurgaCure LLP operates in the healthcare trade and distribution segment, with activities spanning pharmaceutical formulations, drugs, medicines, nutraceuticals, food and health supplements, cosmetics, surgical products, medical products, diagnostic products and allied healthcare goods.</p>
+            <p>Our objective is to build efficient supply relationships with manufacturers and principals while providing consistent service to our trade partners.</p>
+          </div>
+          <div class="about-box">
+            <strong>Our Vision</strong>
+            <p style="margin-top:10px; color:#59656d;">To build a trusted and scalable healthcare distribution platform known for service quality, reliability and strong channel relationships.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="light-section" id="business">
+      <div class="container">
+        <div class="section-title">
+          <span>What We Do</span>
+          <h2>Business activities designed around distribution and market reach.</h2>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>C&F Operations</h3>
+            <p>Supporting manufacturers and healthcare companies with carrying and forwarding services and regional distribution infrastructure.</p>
+          </div>
+          <div class="card">
+            <h3>Super Stockist & Wholesale</h3>
+            <p>Connecting products with distributors, stockists, retailers and trade partners through structured supply channels.</p>
+          </div>
+          <div class="card">
+            <h3>Marketing & Distribution</h3>
+            <p>Helping healthcare products build market presence through trade distribution, channel support and commercial execution.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="categories">
+      <div class="container">
+        <div class="section-title">
+          <span>Product Categories</span>
+          <h2>Serving a broad healthcare product portfolio.</h2>
+          <p>Our business scope allows us to work across multiple healthcare and wellness categories.</p>
+        </div>
+        <div class="pill-grid">
+          <div class="pill">Pharmaceutical Formulations</div>
+          <div class="pill">Medicines</div>
+          <div class="pill">Nutraceuticals</div>
+          <div class="pill">Health Supplements</div>
+          <div class="pill">Surgical Products</div>
+          <div class="pill">Medical Products</div>
+          <div class="pill">Diagnostic Products</div>
+          <div class="pill">Cosmetics</div>
+          <div class="pill">Allied Healthcare Goods</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="light-section">
+      <div class="container">
+        <div class="section-title">
+          <span>Why DurgaCure</span>
+          <h2>Focused on dependable execution.</h2>
+        </div>
+        <div class="why-grid">
+          <div class="why"><h3>Reliable Supply</h3><p>Consistent focus on availability, dispatch discipline and partner service.</p></div>
+          <div class="why"><h3>Channel Focus</h3><p>Built around the operational needs of healthcare distribution networks.</p></div>
+          <div class="why"><h3>Long-Term Relationships</h3><p>A business approach centred on trust, continuity and mutual growth.</p></div>
+          <div class="why"><h3>Growth Ready</h3><p>Structured to expand across products, principals and healthcare categories.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="contact-wrap">
+          <div>
+            <h2>Let’s build better healthcare distribution.</h2>
+            <p>For distribution, C&F, super stockist, wholesale or business partnership enquiries, get in touch with us.</p>
+          </div>
+          <div class="contact-list">
+            <div><strong>Company:</strong> DurgaCure LLP</div>
+            <div><strong>Location:</strong> Gujarat, India</div>
+            <div><strong>Email:</strong> your-email@example.com</div>
+            <div><strong>Phone:</strong> +91 XXXXX XXXXX</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="year"></span> DurgaCure LLP. All rights reserved.</div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
