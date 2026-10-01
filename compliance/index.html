@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VHMCCEZY2F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VHMCCEZY2F');</script>
+<title>Durgacure Compliance Calendar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a filing register — status strip, "due next", then the full FY ledger month by month, rules reference at the end */
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --fg:#16232E; --muted:#5E6B76; --line:#DDE3E8;
+  --brand:#173B57; --brand-soft:#E4ECF3; --gold:#B57B12; --gold-soft:#FBF1DD;
+  --crit:#B42318; --crit-soft:#FDECEA; --warn:#9A5B00; --warn-soft:#FFF3DC; --ok:#1E7A4C; --ok-soft:#E4F4EB; --na:#6B7680; --na-soft:#EEF1F3;
+  --gst:#1F5F8B; --tax:#6B3FA0; --roc:#A1491D; --pay:#2F7A6B; --int:#5E6B76;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E151B; --surface:#16202A; --fg:#E6ECF1; --muted:#98A4AF; --line:#2A3743;
+  --brand:#8FC0E6; --brand-soft:#1A2D3D; --gold:#E9B95C; --gold-soft:#33280F;
+  --crit:#F28B82; --crit-soft:#3A1D1B; --warn:#F2C26B; --warn-soft:#3A2D14; --ok:#6FCF97; --ok-soft:#173326; --na:#98A4AF; --na-soft:#222D37;
+  --gst:#7DB8E3; --tax:#B99AE6; --roc:#EBA27A; --pay:#72C9B6; --int:#98A4AF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151B; --surface:#16202A; --fg:#E6ECF1; --muted:#98A4AF; --line:#2A3743;
+  --brand:#8FC0E6; --brand-soft:#1A2D3D; --gold:#E9B95C; --gold-soft:#33280F;
+  --crit:#F28B82; --crit-soft:#3A1D1B; --warn:#F2C26B; --warn-soft:#3A2D14; --ok:#6FCF97; --ok-soft:#173326; --na:#98A4AF; --na-soft:#222D37;
+  --gst:#7DB8E3; --tax:#B99AE6; --roc:#EBA27A; --pay:#72C9B6; --int:#98A4AF; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:18px;padding-block:26px 64px;display:flex;flex-direction:column;gap:26px}
+h1{font-size:28px;line-height:1.15;margin:0;letter-spacing:-.01em;color:var(--brand);text-wrap:balance}
+h2{font-size:18px;margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sub{color:var(--muted);margin:6px 0 0;max-width:72ch}
+section{display:flex;flex-direction:column;gap:12px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+.store{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13.5px}
+.store .lamp{width:9px;height:9px;border-radius:50%;background:var(--na);flex:none}
+.store.shared .lamp{background:var(--ok)} .store.local .lamp{background:var(--warn)}
+.store form{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.store input[type=email]{font:inherit;padding:5px 9px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg);min-width:0;width:220px;max-width:100%}
+.btn{font:600 13px var(--f-body);border:1px solid var(--brand);background:var(--brand);color:var(--surface);padding:5px 12px;border-radius:7px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column}
+.stat b{font:600 22px var(--f-mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+.stat.crit b{color:var(--crit)} .stat.ok b{color:var(--ok)} .stat.warn b{color:var(--warn)}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+select{font:500 13.5px var(--f-body);padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--fg)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{font:500 13px var(--f-body);border:0;background:transparent;color:var(--fg);padding:5px 11px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:4px 11px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:grid;grid-template-columns:86px 1fr auto;gap:12px;align-items:start;padding:11px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.date{font-family:var(--f-mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.date small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.what{min-width:0;display:flex;flex-direction:column;gap:3px}
+.what .t{font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.what .m{color:var(--muted);font-size:13px}
+.cond{font:500 11.5px var(--f-body);color:var(--gold);background:var(--gold-soft);padding:1px 8px;border-radius:999px}
+.hint{font:500 11.5px var(--f-body);color:var(--na);background:var(--na-soft);padding:1px 8px;border-radius:999px}
+.who{font-size:12px;color:var(--ok)}
+.act{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.pill{font:600 12px var(--f-mono);padding:3px 9px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.p-crit{background:var(--crit-soft);color:var(--crit)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-ok{background:var(--brand-soft);color:var(--brand)}.p-done{background:var(--ok-soft);color:var(--ok)}.p-na{background:var(--na-soft);color:var(--na)}
+.sbtn{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.sbtn button{font:600 12px var(--f-body);border:0;background:var(--surface);color:var(--muted);padding:4px 10px;cursor:pointer}
+.sbtn button+button{border-left:1px solid var(--line)}
+.sbtn button[aria-pressed="true"].d{background:var(--ok-soft);color:var(--ok)}
+.sbtn button[aria-pressed="true"].n{background:var(--na-soft);color:var(--fg)}
+.sbtn button:disabled{cursor:not-allowed;opacity:.5}
+.row.st-done .t,.row.st-na .t{opacity:.6}
+.row.st-done .t span.nm{text-decoration:line-through}
+.month{font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:9px 14px;background:color-mix(in srgb,var(--line) 40%,var(--surface));border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.month:first-child{border-top:0}
+.empty{padding:18px 14px;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+th{font:600 11.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:0;background:color-mix(in srgb,var(--line) 40%,var(--surface))}
+td.dd{font-family:var(--f-mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+.grp td{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft)}
+.fine{color:var(--muted);font-size:12.5px;max-width:84ch;margin:0}
+.fine a{color:var(--brand)}
+@media (max-width:600px){
+  .row{grid-template-columns:1fr auto}
+  .row .date{grid-column:1;grid-row:1}
+  .row .act{grid-column:2;grid-row:1}
+  .row .what{grid-column:1 / 3;grid-row:2}
+  h1{font-size:23px}
+  .store form{margin-left:0}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Durgacure LLP · LLPIN ADB-5085 · Gujarat</div>
+    <h1>Durgacure Compliance Calendar</h1>
+    <p class="sub">Every GST, TDS, income-tax, MCA, payroll and Gujarat filing for an LLP, every year. Nothing is hidden. Items that don't apply to Durgacure yet are greyed out with the reason. Mark each one <b>Done</b> or <b>N/A</b>.</p>
+  </header>
+
+  <div class="store" id="store"><span class="lamp"></span><span id="storeMsg">Loading saved ticks…</span></div>
+
+  <div class="stats" id="stats"></div>
+
+  <section>
+    <div class="head"><h2>Due next</h2><span class="eyebrow" id="todayLbl"></span></div>
+    <div class="list" id="next"></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Full calendar</h2></div>
+    <div class="controls">
+      <label class="ctl" for="fy">Financial year <select id="fy"></select></label>
+      <span class="ctl">GST return type <span class="seg" id="scheme"><button type="button" data-v="M">Monthly</button><button type="button" data-v="Q">Quarterly (QRMP)</button></span></span>
+      <span class="ctl">Show <span class="seg" id="show"><button type="button" data-v="all">All</button><button type="button" data-v="open">Pending</button><button type="button" data-v="done">Done / N/A</button></span></span>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filter by type"></div>
+    <div class="list" id="ledger"></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Rules at a glance</h2><span class="eyebrow">what, when, and the cost of missing it</span></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Filing</th><th>Due</th><th>Applies when</th><th>If missed</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="4">GST, monthly filer</td></tr>
+          <tr><td>GSTR-1: outward invoices</td><td class="dd">11th</td><td>Turnover above ₹5 cr, or chose monthly</td><td>₹50/day (₹20 nil); buyers lose ITC</td></tr>
+          <tr><td>GSTR-2B: check and reconcile purchase ITC</td><td class="dd">from 14th</td><td>Every month, before filing 3B</td><td>ITC claimed wrongly gets reversed with interest</td></tr>
+          <tr><td>GSTR-3B: summary return and tax payment (cash + RCM)</td><td class="dd">20th</td><td>Monthly filer</td><td>₹50/day (₹20 nil) plus 18% interest</td></tr>
+          <tr class="grp"><td colspan="4">GST, quarterly filer (QRMP, turnover up to ₹5 cr)</td></tr>
+          <tr><td>IFF: B2B invoices, optional</td><td class="dd">13th (months 1–2)</td><td>So B2B buyers get ITC monthly</td><td>None (optional)</td></tr>
+          <tr><td>PMT-06: monthly tax payment</td><td class="dd">25th (months 1–2)</td><td>QRMP filer</td><td>18% interest</td></tr>
+          <tr><td>GSTR-1: quarterly</td><td class="dd">13 Jul · Oct · Jan · Apr</td><td>QRMP filer</td><td>₹50/day</td></tr>
+          <tr><td>GSTR-3B: quarterly (Gujarat)</td><td class="dd">22 Jul · Oct · Jan · Apr</td><td>QRMP filer</td><td>₹50/day plus interest</td></tr>
+          <tr><td>Switch between monthly and QRMP</td><td class="dd">30 Apr · 31 Jul · 31 Oct · 31 Jan</td><td>To change type for the next quarter</td><td>Stays on the current type</td></tr>
+          <tr class="grp"><td colspan="4">GST, yearly and ongoing</td></tr>
+          <tr><td>Last date to claim missed ITC and fix last year's GSTR-1</td><td class="dd">30 Nov</td><td>Previous FY's invoices</td><td>That ITC is lost permanently</td></tr>
+          <tr><td>GSTR-9: annual return</td><td class="dd">31 Dec</td><td>Optional under ₹2 cr turnover</td><td>₹200/day, capped</td></tr>
+          <tr><td>GSTR-9C: reconciliation statement</td><td class="dd">31 Dec</td><td>Turnover above ₹5 cr</td><td>₹200/day, capped</td></tr>
+          <tr><td>ITC-04: goods sent for job work</td><td class="dd">25 Apr (25 Oct too if over ₹5 cr)</td><td>Only if you send goods to a job worker</td><td>Late fee</td></tr>
+          <tr><td>E-invoice (IRN) on B2B bills</td><td class="dd">each invoice</td><td>Turnover above ₹5 cr in any year since 2017-18. Upload within 30 days if ₹10 cr+.</td><td>Invoice invalid; buyer loses ITC</td></tr>
+          <tr><td>E-way bill</td><td class="dd">each dispatch</td><td>Consignment value over ₹50,000</td><td>Goods detained; penalty</td></tr>
+          <tr class="grp"><td colspan="4">Income tax and TDS</td></tr>
+          <tr><td>Deposit TDS (rent, contractors, professionals, salary, purchases*)</td><td class="dd">7th (March: 30 Apr)</td><td>Whenever TDS is deducted</td><td>1.5% per month interest</td></tr>
+          <tr><td>TDS return (26Q / 24Q)</td><td class="dd">31 Jul · 31 Oct · 31 Jan · 31 May</td><td>Any TDS in the quarter</td><td>₹200/day, up to the TDS amount</td></tr>
+          <tr><td>Form 16A certificates</td><td class="dd">15 Aug · 15 Nov · 15 Feb · 15 Jun</td><td>To each deductee</td><td>₹100/day</td></tr>
+          <tr><td>Advance tax</td><td class="dd">15 Jun · 15 Sep · 15 Dec · 15 Mar</td><td>Tax over ₹10,000. Pay 15/45/75/100% cumulatively.</td><td>1% per month interest</td></tr>
+          <tr><td>Form 16 to employees</td><td class="dd">15 Jun</td><td>TDS on salary</td><td>₹100/day</td></tr>
+          <tr><td>Form 61A: SFT (cash receipts over ₹2 lakh, etc.)</td><td class="dd">31 May</td><td>If the tax audit applies and there are reportable transactions</td><td>₹500–1,000/day</td></tr>
+          <tr><td>Tax audit report (3CB/3CD)</td><td class="dd">30 Sep</td><td>Turnover over ₹1 cr (₹10 cr if cash is 5% or less)</td><td>0.5% of turnover, max ₹1.5 lakh</td></tr>
+          <tr><td>ITR-5</td><td class="dd">31 Oct (audit)</td><td>Every year. Non-audit: 31 Jul, or 31 Aug under the new Act.</td><td>₹5,000 plus interest; losses can't be carried forward</td></tr>
+          <tr class="grp"><td colspan="4">MCA (ROC), LLP Act</td></tr>
+          <tr><td>Form 11: annual return</td><td class="dd">30 May</td><td>Every LLP, even if inactive</td><td>₹100/day, no cap</td></tr>
+          <tr><td>DIR-3 KYC for each designated partner</td><td class="dd">30 Sep</td><td>Every DIN holder</td><td>DIN deactivated; ₹5,000 to reactivate</td></tr>
+          <tr><td>Statutory audit of LLP accounts</td><td class="dd">before Form 8</td><td>Turnover over ₹40 lakh or contribution over ₹25 lakh</td><td>Form 8 can't be filed</td></tr>
+          <tr><td>Form 8: accounts and solvency</td><td class="dd">30 Oct</td><td>Every LLP</td><td>₹100/day, no cap</td></tr>
+          <tr><td>Form 3 / Form 4: agreement or partner change</td><td class="dd">30 days from event</td><td>Form 3 within 30 days of incorporation; then on any change</td><td>₹100/day, no cap</td></tr>
+          <tr class="grp"><td colspan="4">Payroll, Gujarat and licences</td></tr>
+          <tr><td>PF and ESI</td><td class="dd">15th</td><td>PF from 20 staff, ESI from 10</td><td>Interest and damages</td></tr>
+          <tr><td>Gujarat professional tax: staff (PTRC)</td><td class="dd">15th</td><td>Staff earning ₹12,000+/month</td><td>Interest and penalty</td></tr>
+          <tr><td>Gujarat professional tax: entity (PTEC)</td><td class="dd">yearly</td><td>The LLP itself. Confirm amount and date with your CA.</td><td>Interest and penalty</td></tr>
+          <tr><td>Gujarat Labour Welfare Fund</td><td class="dd">31 Jul · 31 Jan</td><td>10+ employees. Confirm with your CA.</td><td>Penalty</td></tr>
+          <tr><td>Drug licence (20B/21B) retention fee</td><td class="dd">every 5 years</td><td>From the date of issue. Also tell FDCA if the competent person changes.</td><td>Licence lapses</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">* TDS on purchases applies once your previous year's turnover is over ₹10 cr, on purchases above ₹50 lakh from one seller. Dates are current as of October 2026. From 1 April 2026 the Income-tax Act, 2025 replaced the 1961 Act, which renumbered sections and forms but left most due dates unchanged. Due dates are often extended, so check with your CA. Sources: <a href="https://treelife.in/compliance/llp-compliance-calendar/">Treelife</a>, <a href="https://www.incorpx.io/blog/master-compliance-calendar-fy-2026-27">InCorpX</a>, <a href="https://www.patronaccounting.com/blog/income-tax-act-1961-vs-2025-key-changes-itr-filing">Patron Accounting</a>.</p>
+  </section>
+</div>
+
+<script>
+/* Supabase keys for the durgacure.com copy. Leave empty inside Claude (shared storage is used there). */
+window.DCL_SUPABASE = window.DCL_SUPABASE || { url: "", anonKey: "" };
+</script>
+<script>
+(function(){
+  "use strict";
+  const CAT={gst:{l:"GST",c:"var(--gst)"},tax:{l:"Income tax & TDS",c:"var(--tax)"},roc:{l:"MCA / ROC",c:"var(--roc)"},pay:{l:"Payroll & Gujarat",c:"var(--pay)"},int:{l:"Internal",c:"var(--int)"}};
+  const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const MONL=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const DCL_START=new Date(2026,9,1);      // Durgacure GST/operations start (Oct 2026)
+  const FIRST_FY=2026, LAST_FY=2030;
+  const D=(y,m,d)=>new Date(y,m,d);
+  const iso=(dt)=>dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+  const fyLbl=(y)=>"FY "+y+"-"+String(y+1).slice(2);
+  const mLbl=(dt)=>MON[dt.getMonth()]+" "+dt.getFullYear();
+
+  /* ---------- filing definitions ---------- */
+  // m: monthly day for previous month; q: list of [month,day,qLabel,periodStartMonthOffset]; a: annual [month,day] relating to previous FY unless cur:true
+  function monthsOfFY(y){const r=[];for(let i=0;i<12;i++)r.push(D(y,3+i,1));return r;}
+  const DEFS=[
+    // GST — monthly scheme
+    {id:"gstr1",cat:"gst",sch:"M",nm:"GSTR-1",ds:p=>"Sales invoices for "+p,kind:"m",day:11},
+    {id:"gstr2b",cat:"gst",nm:"Reconcile GSTR-2B with purchases",ds:p=>"Match purchase bills to 2B for "+p+" before filing 3B",kind:"m",day:14},
+    {id:"gstr3b",cat:"gst",sch:"M",nm:"GSTR-3B + pay GST",ds:p=>"Summary return and tax, including RCM, for "+p,kind:"m",day:20},
+    // GST — QRMP
+    {id:"iff",cat:"gst",sch:"Q",nm:"IFF (optional)",ds:p=>"B2B invoices for "+p+", so buyers get ITC",kind:"mq",day:13},
+    {id:"pmt06",cat:"gst",sch:"Q",nm:"PMT-06: pay GST",ds:p=>"Monthly tax payment for "+p,kind:"mq",day:25},
+    {id:"gstr1q",cat:"gst",sch:"Q",nm:"GSTR-1 (quarterly)",ds:p=>"Sales invoices for "+p,kind:"qe",day:13},
+    {id:"gstr3bq",cat:"gst",sch:"Q",nm:"GSTR-3B (quarterly)",ds:p=>"Return and balance tax for "+p,kind:"qe",day:22},
+    {id:"qrmp",cat:"gst",nm:"Choose monthly / QRMP for next quarter",ds:p=>"Option window closes, for "+p,kind:"opt",cond:"Only to switch"},
+    {id:"itccut",cat:"gst",nm:"Last date: claim missed ITC and amend GSTR-1",ds:p=>"For invoices of "+p+". After this, that ITC is lost.",kind:"a",m:10,d:30},
+    {id:"gstr9",cat:"gst",nm:"GSTR-9: GST annual return",ds:p=>"For "+p,kind:"a",m:11,d:31,cond:"Optional under ₹2 cr"},
+    {id:"gstr9c",cat:"gst",nm:"GSTR-9C: reconciliation",ds:p=>"For "+p,kind:"a",m:11,d:31,cond:"Turnover over ₹5 cr"},
+    {id:"itc04",cat:"gst",nm:"ITC-04: job-work goods",ds:p=>"For "+p,kind:"a",m:3,d:25,cond:"Only if goods sent to job worker"},
+    // Income tax / TDS
+    {id:"tds",cat:"tax",nm:"Deposit TDS",ds:p=>"Deductions of "+p+": rent, contractors, fees, salary",kind:"tds"},
+    {id:"tdsr",cat:"tax",nm:"TDS return (26Q / 24Q)",ds:p=>"Quarter "+p,kind:"q",dates:[[6,31],[9,31],[0,31],[4,31]],cond:"If any TDS in the quarter"},
+    {id:"f16a",cat:"tax",nm:"Issue Form 16A",ds:p=>"TDS certificates for quarter "+p,kind:"q",dates:[[7,15],[10,15],[1,15],[5,15]],cond:"If any TDS in the quarter"},
+    {id:"adv",cat:"tax",nm:"Advance tax",ds:p=>p,kind:"adv"},
+    {id:"f16",cat:"tax",nm:"Form 16 to employees",ds:p=>"Salary TDS certificates for "+p,kind:"a",m:5,d:15,cond:"If TDS on salary"},
+    {id:"sft",cat:"tax",nm:"Form 61A: SFT",ds:p=>"Reportable transactions of "+p,kind:"a",m:4,d:31,cond:"If audited and reportable"},
+    {id:"taudit",cat:"tax",nm:"Tax audit report (3CB/3CD)",ds:p=>"For "+p,kind:"a",m:8,d:30,cond:"Turnover over ₹1 cr"},
+    {id:"itr",cat:"tax",nm:"ITR-5: income tax return",ds:p=>"For "+p+". Audit case; non-audit is due earlier.",kind:"a",m:9,d:31},
+    // MCA
+    {id:"f11",cat:"roc",nm:"Form 11: LLP annual return",ds:p=>"Partners and contribution as on 31 Mar, for "+p,kind:"a",m:4,d:30},
+    {id:"kyc",cat:"roc",nm:"DIR-3 KYC: designated partners",ds:p=>"Aditya and Ranjit's DINs",kind:"a",m:8,d:30},
+    {id:"saudit",cat:"roc",nm:"Statutory audit of LLP accounts signed",ds:p=>"Needed before Form 8, for "+p,kind:"a",m:8,d:30,cond:"Over ₹40 L turnover or ₹25 L contribution"},
+    {id:"f8",cat:"roc",nm:"Form 8: accounts and solvency",ds:p=>"Audited accounts for "+p,kind:"a",m:9,d:30},
+    // Payroll & Gujarat
+    {id:"pf",cat:"pay",nm:"PF / ESI contribution",ds:p=>"For "+p+" wages",kind:"m",day:15,cond:"20+ / 10+ staff"},
+    {id:"ptrc",cat:"pay",nm:"Gujarat professional tax (PTRC)",ds:p=>"Staff PT deducted in "+p,kind:"m",day:15,cond:"Once salaried staff"},
+    {id:"lwf",cat:"pay",nm:"Gujarat Labour Welfare Fund",ds:p=>"Contribution for "+p,kind:"h",cond:"10+ staff; confirm with CA"},
+    // Internal
+    {id:"bank",cat:"int",nm:"Stock & debtors statement to bank",ds:p=>"Position as on end of "+p,kind:"m",day:10,cond:"Once a CC limit is sanctioned"},
+    {id:"books",cat:"int",nm:"Hand closed books to CA",ds:p=>"For "+p+", so the audit finishes before September",kind:"a",m:6,d:31},
+    {id:"ye",cat:"int",nm:"Year-end close",ds:p=>"Physical stock count, close books in Marg, stock statement for "+p,kind:"a",m:2,d:31,cur:true},
+    {id:"ns",cat:"int",nm:"New invoice series",ds:p=>"New FY prefix in Marg for "+p+"; renew the rent agreement if it's for 11 months",kind:"a",m:3,d:1,cur:true},
+  ];
+
+  function gen(y){ // all occurrences whose due date falls in FY y (1 Apr y – 31 Mar y+1)
+    const out=[]; const s=D(y,3,1), e=D(y+1,2,31);
+    const push=(def,date,period,pStart,forFY)=>{ if(date<s||date>e) return;
+      out.push({key:def.id+"_"+iso(date),def,date,period,pStart,forFY}); };
+    for(const def of DEFS){
+      if(def.kind==="m"||def.kind==="tds"){
+        for(const m1 of monthsOfFY(y)){
+          const prev=D(m1.getFullYear(),m1.getMonth()-1,1);
+          let date=D(m1.getFullYear(),m1.getMonth(),def.day||7);
+          if(def.kind==="tds"&&m1.getMonth()===3) date=D(m1.getFullYear(),3,30);
+          push(def,date,mLbl(prev),prev);
+        }
+      } else if(def.kind==="mq"){ // after months 1 & 2 of each quarter
+        for(const m1 of monthsOfFY(y)){ const prev=D(m1.getFullYear(),m1.getMonth()-1,1); const qm=(prev.getMonth()-3+12)%3;
+          if(qm<2) push(def,D(m1.getFullYear(),m1.getMonth(),def.day),mLbl(prev),prev); }
+      } else if(def.kind==="qe"||def.kind==="q"){
+        // quarter whose return falls in this FY: previous quarter of each due month
+        const dues = def.kind==="qe" ? [[6,def.day],[9,def.day],[0,def.day],[3,def.day]] : def.dates;
+        dues.forEach(([mm,dd])=>{
+          const yr = mm<3 ? y+1 : y;
+          const date=D(yr,mm,dd);
+          // period start = quarter ending before the due month (Q4 due in Apr/May/Jun of FY y = Jan–Mar y)
+          let qs; if(mm>=6&&mm<=8) qs=D(y,3,1); else if(mm>=9&&mm<=11) qs=D(y,6,1); else if(mm>=0&&mm<=2) qs=D(y,9,1); else qs=D(y,0,1);
+          const qe=D(qs.getFullYear(),qs.getMonth()+2,1);
+          push(def,date,MON[qs.getMonth()]+"–"+MON[qe.getMonth()]+" "+qe.getFullYear(),qs);
+        });
+      } else if(def.kind==="opt"){
+        [[3,30,D(y,6,1)],[6,31,D(y,9,1)],[9,31,D(y+1,0,1)],[0,31,D(y+1,3,1)]].forEach(([mm,dd,qs])=>{
+          const yr=mm<3?y+1:y; const qe=D(qs.getFullYear(),qs.getMonth()+2,1);
+          push(def,D(yr,mm,dd),MON[qs.getMonth()]+"–"+MON[qe.getMonth()]+" "+qe.getFullYear(),qs);
+        });
+      } else if(def.kind==="adv"){
+        [[5,15,"15% of "+fyLbl(y)+" estimated tax"],[8,15,"45% cumulative, "+fyLbl(y)],[11,15,"75% cumulative, "+fyLbl(y)],[2,15,"100% of "+fyLbl(y)+" tax"]].forEach(([mm,dd,t])=>{
+          push(def,D(mm<3?y+1:y,mm,dd),t,D(y,3,1));
+        });
+      } else if(def.kind==="h"){
+        push(def,D(y,6,31),"Jan–Jun "+y,D(y,0,1));
+        push(def,D(y+1,0,31),"Jul–Dec "+y,D(y,6,1));
+      } else if(def.kind==="a"){
+        const yr=def.m<3?y+1:y; const date=D(yr,def.m,def.d);
+        const forFY = def.cur ? y : y-1;
+        push(def,date,fyLbl(forFY),D(forFY,3,1),forFY);
+      }
+    }
+    out.sort((a,b)=>a.date-b.date||a.def.nm.localeCompare(b.def.nm));
+    return out;
+  }
+  // Durgacure-specific reason an item doesn't apply (shown greyed, never removed)
+  function hint(o){
+    if(o.forFY!=null && o.forFY<2026) return "Not for Durgacure: it relates to "+fyLbl(o.forFY)+", before the LLP existed";
+    if(o.def.id==="kyc" && o.date<D(2027,3,1)) return "Not for Durgacure yet: DINs issued in 2026 are first due on 30 Sep 2027";
+    if(o.date<DCL_START) return "Not for Durgacure: due before operations began (Oct 2026)";
+    if(o.pStart && o.pStart<DCL_START && o.date<D(2027,3,1)) return "Not for Durgacure: the period is before operations began (Oct 2026)";
+    return null;
+  }
+
+  /* ---------- state ---------- */
+  const status={};           // key -> {s:"done"|"na", by, at}
+  const LS="dcl-status-v2";
+  const pref=(k,v)=>{try{ if(v===undefined) return localStorage.getItem("dcl-"+k); localStorage.setItem("dcl-"+k,v);}catch(e){return null}};
+  let scheme=pref("scheme")||"M", show=pref("show")||"all", filter="all";
+  const today=new Date(); today.setHours(0,0,0,0);
+  let fy = today.getMonth()>=3?today.getFullYear():today.getFullYear()-1; if(fy<FIRST_FY) fy=FIRST_FY;
+  let store={mode:"none",canWrite:false,set:async()=>{},label:""};
+  const names={};            // user id -> display name (artifact)
+
+  /* ---------- storage backends ---------- */
+  function setStoreUI(cls,msg,extra){
+    const el=document.getElementById("store"); el.className="store "+cls;
+    document.getElementById("storeMsg").innerHTML=msg; const old=el.querySelector("form"); if(old) old.remove(); if(extra) el.appendChild(extra);
+  }
+  function useLocal(reason){
+    try{ Object.assign(status, JSON.parse(localStorage.getItem(LS)||"{}")); }catch(e){}
+    store={mode:"local",canWrite:true,set:async(k,v)=>{ if(v) status[k]=v; else delete status[k]; try{localStorage.setItem(LS,JSON.stringify(status))}catch(e){} }};
+    setStoreUI("local","<b>Saved on this device only.</b> "+(reason||"Partners on other devices won't see these ticks."));
+    renderAll();
+  }
+  async function tryArtifact(){
+    if(!(window.claude && typeof window.claude.use==="function")) return false;
+    const db=await window.claude.use("db"); if(!db) return false;
+    const user=await window.claude.use("user");
+    let me=null; try{ me=user? await user.id():null; }catch(e){}
+    const can = user && user.can ? user.can("data.write") : null;
+    store={mode:"db",canWrite:can!==false,set:async(k,v)=>{
+      const ref=db.collection("status").doc(k);
+      if(v) await ref.set({s:v.s,by:me||"",at:new Date().toISOString()}); else await ref.delete();
+    }};
+    setStoreUI("shared", store.canWrite?"<b>Shared.</b> Ticks are saved for everyone this page is shared with.":"<b>Read-only.</b> You can view the saved ticks but not change them.");
+    db.collection("status").onSnapshot(async snap=>{
+      for(const k in status) delete status[k];
+      snap.docs.forEach(d=>{ const x=d.data()||{}; if(x.s==="done"||x.s==="na") status[d.id]={s:x.s,by:x.by,at:x.at}; });
+      if(user && user.profiles){ const ids=[...new Set(Object.values(status).map(v=>v.by).filter(Boolean))];
+        try{ const ps=await user.profiles(ids); ids.forEach(id=>{ names[id]=(ps[id]&&ps[id].name)||""; }); }catch(e){} }
+      renderAll();
+    },()=>setStoreUI("local","<b>Couldn't reach shared storage.</b> Reload to try again."));
+    return true;
+  }
+  function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+  async function trySupabase(){
+    const cfg=window.DCL_SUPABASE||{}; if(!cfg.url||!cfg.anonKey) return false;
+    try{ await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"); }catch(e){ return false; }
+    const sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){
+      const f=document.createElement("form");
+      f.innerHTML='<input type="email" id="em" required placeholder="partner email" aria-label="Partner email"><button class="btn" type="submit">Email me a sign-in link</button>';
+      f.addEventListener("submit",async ev=>{ev.preventDefault();const email=f.querySelector("#em").value.trim();
+        const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
+        document.getElementById("storeMsg").innerHTML=error?"<b>Couldn't send the link.</b> "+error.message:"<b>Check your inbox</b> for the sign-in link.";});
+      store={mode:"supabase-out",canWrite:false,set:async()=>{}};
+      setStoreUI("", "<b>Sign in to see and save ticks.</b> Partners only.", f); renderAll(); return true;
+    }
+    const email=session.user.email;
+    const load=async()=>{ const {data,error}=await sb.from("compliance_status").select("key,status,updated_by,updated_at");
+      if(error){ setStoreUI("local","<b>Signed in as "+email+", but this email isn't allowed.</b> Ask Aditya to add it."); return; }
+      for(const k in status) delete status[k]; data.forEach(r=>status[r.key]={s:r.status,by:r.updated_by,at:r.updated_at}); renderAll(); };
+    store={mode:"supabase",canWrite:true,set:async(k,v)=>{
+      if(v){ const {error}=await sb.from("compliance_status").upsert({key:k,status:v.s,updated_by:email,updated_at:new Date().toISOString()}); if(error) throw error; }
+      else { const {error}=await sb.from("compliance_status").delete().eq("key",k); if(error) throw error; } }};
+    const out=document.createElement("form"); out.innerHTML='<button class="btn ghost" type="submit">Sign out</button>';
+    out.addEventListener("submit",async ev=>{ev.preventDefault();await sb.auth.signOut();location.reload();});
+    setStoreUI("shared","<b>Shared.</b> Signed in as "+email+". Ticks save for all partners.",out);
+    sb.channel("dcl").on("postgres_changes",{event:"*",schema:"public",table:"compliance_status"},load).subscribe();
+    await load(); return true;
+  }
+
+  /* ---------- rendering ---------- */
+  const days=(dt)=>Math.round((dt-today)/864e5);
+  const fmt=(dt)=>String(dt.getDate()).padStart(2,"0")+" "+MON[dt.getMonth()];
+  const dow=(dt)=>["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][dt.getDay()];
+  const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const visibleScheme=(o)=>!o.def.sch||o.def.sch===scheme;
+  function state(o){ const st=status[o.key]; if(st) return st.s; return hint(o)?"hint":"open"; }
+  function pill(o){
+    const s=state(o);
+    if(s==="done") return '<span class="pill p-done">Done</span>';
+    if(s==="na"||s==="hint") return '<span class="pill p-na">N/A</span>';
+    const n=days(o.date);
+    if(n<0) return '<span class="pill p-crit">'+(-n)+'d overdue</span>';
+    if(n===0) return '<span class="pill p-crit">Due today</span>';
+    if(n<=7) return '<span class="pill p-crit">'+n+'d left</span>';
+    if(n<=20) return '<span class="pill p-warn">'+n+'d left</span>';
+    return '<span class="pill p-ok">in '+n+'d</span>';
+  }
+  function row(o){
+    const c=CAT[o.def.cat], st=status[o.key], s=state(o), h=hint(o), dis=store.canWrite?"":" disabled";
+    let who=""; if(st){ const n=(st.by&&names[st.by])||(st.by&&st.by.includes("@")?st.by:""); const at=st.at?new Date(st.at):null;
+      who='<span class="who">'+(st.s==="done"?"Marked done":"Marked N/A")+(n?" by "+esc(n):"")+(at&&!isNaN(at)?" · "+fmt(at)+" "+at.getFullYear():"")+'</span>'; }
+    return '<div class="row st-'+s+'">'+
+      '<div class="date">'+fmt(o.date)+'<small>'+dow(o.date)+' '+o.date.getFullYear()+'</small></div>'+
+      '<div class="what"><span class="t"><span class="dot" style="background:'+c.c+'"></span><span class="nm">'+esc(o.def.nm)+'</span>'+(o.def.cond?' <span class="cond">'+esc(o.def.cond)+'</span>':'')+'</span>'+
+        '<span class="m">'+esc(o.def.ds(o.period))+'</span>'+(h&&!st?'<span><span class="hint">'+esc(h)+'</span></span>':'')+who+'</div>'+
+      '<div class="act">'+pill(o)+'<span class="sbtn"><button type="button" class="d" data-k="'+o.key+'" data-s="done" aria-pressed="'+(st&&st.s==="done")+'"'+dis+'>Done</button><button type="button" class="n" data-k="'+o.key+'" data-s="na" aria-pressed="'+(st&&st.s==="na")+'"'+dis+'>N/A</button></span></div>'+
+    '</div>';
+  }
+  function renderStats(){
+    const list=gen(fy).filter(visibleScheme); let done=0,na=0,over=0,open=0;
+    list.forEach(o=>{const s=state(o); if(s==="done")done++; else if(s==="na"||s==="hint")na++; else if(o.date<today)over++; else open++;});
+    document.getElementById("stats").innerHTML=
+      '<div class="stat crit"><b>'+over+'</b><span>Overdue in '+fyLbl(fy)+'</span></div>'+
+      '<div class="stat warn"><b>'+open+'</b><span>Still to file</span></div>'+
+      '<div class="stat ok"><b>'+done+'</b><span>Done</span></div>'+
+      '<div class="stat"><b>'+na+'</b><span>N/A for Durgacure</span></div>';
+  }
+  function renderNext(){
+    const lim=new Date(today); lim.setDate(lim.getDate()+40);
+    let all=[]; for(let y=FIRST_FY;y<=LAST_FY;y++) all=all.concat(gen(y));
+    const list=all.filter(o=>visibleScheme(o)&&state(o)==="open"&&o.date<=lim);
+    document.getElementById("next").innerHTML=list.length?list.map(row).join(""):'<div class="empty">Nothing pending in the next 40 days.</div>';
+  }
+  function renderLedger(){
+    let html="",cur=""; const list=gen(fy).filter(o=>visibleScheme(o)&&(filter==="all"||o.def.cat===filter)).filter(o=>{const s=state(o); return show==="all"||(show==="open"?s==="open":s!=="open");});
+    list.forEach(o=>{ const k=MONL[o.date.getMonth()]+" "+o.date.getFullYear(); if(k!==cur){cur=k;html+='<div class="month"><span>'+k+'</span></div>';} html+=row(o); });
+    document.getElementById("ledger").innerHTML=html||'<div class="empty">Nothing matches these filters.</div>';
+  }
+  function renderControls(){
+    const sel=document.getElementById("fy"); if(!sel.options.length){ for(let y=FIRST_FY;y<=LAST_FY;y++){const op=document.createElement("option");op.value=y;op.textContent=fyLbl(y)+" (Apr "+y+" – Mar "+(y+1)+")";sel.appendChild(op);} }
+    sel.value=fy;
+    document.querySelectorAll("#scheme button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===scheme));
+    document.querySelectorAll("#show button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===show));
+    document.getElementById("chips").innerHTML=[["all","All",null]].concat(Object.entries(CAT).map(([k,v])=>[k,v.l,v.c]))
+      .map(([k,l,c])=>'<button type="button" class="chip" data-f="'+k+'" aria-pressed="'+(filter===k)+'">'+(c?'<span class="dot" style="background:'+c+'"></span>':'')+l+'</button>').join("");
+  }
+  function renderAll(){ renderControls(); renderStats(); renderNext(); renderLedger(); }
+
+  /* ---------- events ---------- */
+  document.addEventListener("click",async e=>{
+    const b=e.target.closest("button[data-k]"); if(!b||!store.canWrite) return;
+    const k=b.dataset.k, s=b.dataset.s, prev=status[k]; const next=(prev&&prev.s===s)?null:{s,at:new Date().toISOString()};
+    if(next) status[k]=next; else delete status[k]; renderAll();
+    try{ await store.set(k,next); }catch(err){ if(prev) status[k]=prev; else delete status[k]; renderAll();
+      document.getElementById("storeMsg").innerHTML="<b>That change wasn't saved.</b> "+esc(err&&err.message||"Try again."); }
+  });
+  document.getElementById("fy").addEventListener("change",e=>{fy=+e.target.value;renderAll();});
+  document.getElementById("scheme").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;scheme=b.dataset.v;pref("scheme",scheme);renderAll();});
+  document.getElementById("show").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;show=b.dataset.v;pref("show",show);renderAll();});
+  document.getElementById("chips").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;filter=b.dataset.f;renderAll();});
+
+  document.getElementById("todayLbl").textContent="pending, next 40 days · as of "+today.getDate()+" "+MON[today.getMonth()]+" "+today.getFullYear();
+  renderAll();
+  (async()=>{ try{ if(await tryArtifact()) return; if(await trySupabase()) return; }catch(e){} useLocal(window.DCL_SUPABASE&&window.DCL_SUPABASE.url?"Supabase didn't load.":"Add Supabase keys to share ticks across partners."); })();
+})();
+</script>
+</body>
+</html>
