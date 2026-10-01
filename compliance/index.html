@@ -194,7 +194,8 @@ window.DCL_SUPABASE = window.DCL_SUPABASE || { url: "", anonKey: "" };
   const CAT={gst:{l:"GST",c:"var(--gst)"},tax:{l:"Income tax & TDS",c:"var(--tax)"},roc:{l:"MCA / ROC",c:"var(--roc)"},pay:{l:"Payroll & Gujarat",c:"var(--pay)"},int:{l:"Internal",c:"var(--int)"}};
   const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const MONL=["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const DCL_START=new Date(2026,9,1);      // Durgacure GST/operations start (Oct 2026)
+  const DCL_START=new Date(2026,9,1);      // Durgacure operations start (Oct 2026)
+  const GST_START=new Date(2026,8,1);      // GST liability from 23 Sep 2026 -> September period onwards
   const FIRST_FY=2026, LAST_FY=2030;
   const D=(y,m,d)=>new Date(y,m,d);
   const iso=(dt)=>dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
@@ -295,6 +296,11 @@ window.DCL_SUPABASE = window.DCL_SUPABASE || { url: "", anonKey: "" };
   function hint(o){
     if(o.forFY!=null && o.forFY<2026) return "Not for Durgacure: it relates to "+fyLbl(o.forFY)+", before the LLP existed";
     if(o.def.id==="kyc" && o.date<D(2027,3,1)) return "Not for Durgacure yet: DINs issued in 2026 are first due on 30 Sep 2027";
+    if(o.def.cat==="gst"){ // GST date of liability: 23 Sep 2026
+      if(o.pStart && o.pStart<GST_START && o.date<D(2027,3,1)) return "Not for Durgacure: before GST registration (liability from 23 Sep 2026)";
+      if(!o.pStart && o.date<GST_START) return "Not for Durgacure: before GST registration";
+      if(o.def.id!=="qrmp") return null;
+    }
     if(o.date<DCL_START) return "Not for Durgacure: due before operations began (Oct 2026)";
     if(o.pStart && o.pStart<DCL_START && o.date<D(2027,3,1)) return "Not for Durgacure: the period is before operations began (Oct 2026)";
     return null;
