@@ -383,7 +383,7 @@ window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey
           <label for="dcl-password">Password</label>
           <div class="dcl-password-row"><input id="dcl-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Enter your password"><button type="button" id="dcl-reveal" aria-label="Show password">Show</button></div>
           <button class="dcl-submit" type="submit">Sign in</button>
-          <button class="dcl-setup" id="dcl-create" type="button">First time? Set my password</button>
+          <div class="dcl-login-hint">Use the password for your registered account.</div>
           <div id="dcl-login-message" role="status" aria-live="polite"></div>
         </form>
       </div>`;
@@ -399,12 +399,6 @@ window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey
         if(error){msg.textContent="Sign-in failed. Check your password or complete first-time setup.";signIn.disabled=false;}
         else location.reload();
       };
-      overlay.querySelector("#dcl-create").onclick=async()=>{
-        if(!username.validity.valid){msg.textContent="Enter a valid email address.";return;}
-        if(password.value.length<8){msg.textContent="Choose a password of at least 8 characters first.";return;}
-        const {error}=await sb.auth.signUp({email:"jalan.aditya30@gmail.com",password:password.value,options:{emailRedirectTo:location.origin+location.pathname}});
-        msg.textContent=error?"Setup failed: "+error.message:"Check your email for a confirmation link, then return here and sign in. If your account already exists, use its existing password or reset it from Supabase.";
-      };
       setStoreUI("","<b>Private calendar.</b> Sign in to view and save changes.");
       renderAll(); return true;
     }
@@ -412,11 +406,12 @@ window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey
     const {data:isPartner,error:partnerError}=await sb.rpc("dcl_is_partner");
     if(partnerError || !isPartner){
       store={mode:"supabase-denied",canWrite:false,set:async()=>{}};
-      setStoreUI("","<b>Account not authorized to view or save compliance records.</b> Contact administrator.");
+      const signout=document.createElement("form"); signout.innerHTML='<button class="btn ghost" type="submit">Sign out</button>'; signout.addEventListener("submit",async ev=>{ev.preventDefault();await sb.auth.signOut();location.reload();});
+      setStoreUI("","<b>Account not authorized to view or save compliance records.</b> Sign out and use your registered account.",signout);
       renderAll(); return true;
     }
     const load=async()=>{ const {data,error}=await sb.from("compliance_status").select("key,status,updated_by,updated_at");
-      if(error){ setStoreUI("local","<b>Signed in as "+email+", but this email isn't allowed.</b> Ask Aditya to add it."); return; }
+      if(error){ store.canWrite=false; setStoreUI("","<b>Database unavailable.</b> Could not load your saved statuses. "+esc(error.message)); renderAll(); return; }
       for(const k in status) delete status[k]; data.forEach(r=>status[r.key]={s:r.status,by:r.updated_by,at:r.updated_at}); renderAll(); };
     store={mode:"supabase",canWrite:true,set:async(k,v)=>{
       if(v){ const {error}=await sb.from("compliance_status").upsert({key:k,status:v.s,updated_by:email,updated_at:new Date().toISOString()}); if(error) throw error; }
