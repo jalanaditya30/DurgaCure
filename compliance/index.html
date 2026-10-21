@@ -102,6 +102,22 @@ td.dd{font-family:var(--f-mono);white-space:nowrap;font-variant-numeric:tabular-
   h1{font-size:23px}
   .store form{margin-left:0}
 }
+
+/* Single-user sign-in — password stays with Supabase Auth, never in source code. */
+#dcl-login-overlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(145deg,#e8f1f5,#d7e7ed);display:grid;place-items:center;padding:20px;color:#1c3543;font-family:inherit}
+.dcl-login-card{width:min(100%,390px);background:white;border:1px solid #c4d8df;border-radius:18px;box-shadow:0 20px 70px #17394927;padding:32px}
+.dcl-login-symbol{width:47px;height:47px;display:grid;place-items:center;border-radius:14px;background:#d9edf3;color:#256486;font-size:28px;margin-bottom:18px}
+.dcl-login-eyebrow{font-size:10px;letter-spacing:.15em;color:#608090;font-weight:800}
+.dcl-login-card h2{margin:7px 0 6px;color:#1c3543;font-size:25px}
+.dcl-login-card p{margin:0 0 23px;font-size:13px;color:#617b89}
+.dcl-login-card form{display:flex;flex-direction:column;gap:9px}
+.dcl-login-card label{font-size:12px;font-weight:700;color:#345466;margin-top:5px}
+.dcl-login-card input{width:100%;padding:12px;border:1px solid #bdd2dc;border-radius:9px;background:#fff;color:#1c3543;font:inherit}
+.dcl-login-card input[readonly]{background:#eff5f7;color:#526977}
+.dcl-password-row{display:flex;gap:7px}.dcl-password-row input{min-width:0;flex:1}.dcl-password-row button{border:1px solid #bdd2dc;border-radius:8px;background:#f3f8fa;color:#285b70;padding:0 10px;cursor:pointer}
+.dcl-submit{background:#245d7a;color:#fff;border:0;border-radius:9px;padding:12px;font-weight:700;margin-top:13px;cursor:pointer}
+.dcl-setup{background:none;border:0;color:#256486;font-size:12px;cursor:pointer;padding:9px}
+#dcl-login-message{font-size:12px;color:#a14b27;min-height:12px}
 </style>
 
 </head>
@@ -354,13 +370,41 @@ window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey
     const sb=window.supabase.createClient(cfg.url,cfg.anonKey);
     const {data:{session}}=await sb.auth.getSession();
     if(!session){
-      const f=document.createElement("form");
-      f.innerHTML='<input type="email" id="em" required placeholder="partner email" aria-label="Partner email"><button class="btn" type="submit">Email me a sign-in link</button>';
-      f.addEventListener("submit",async ev=>{ev.preventDefault();const email=f.querySelector("#em").value.trim();
-        const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
-        document.getElementById("storeMsg").innerHTML=error?"<b>Couldn't send the link.</b> "+error.message:"<b>Check your inbox</b> for the sign-in link.";});
       store={mode:"supabase-out",canWrite:false,set:async()=>{}};
-      setStoreUI("", "<b>Sign in to see and save ticks.</b> Partners only.", f); renderAll(); return true;
+      const overlay=document.createElement("div"); overlay.id="dcl-login-overlay";
+      overlay.innerHTML=`<div class="dcl-login-card">
+        <div class="dcl-login-symbol">✚</div>
+        <div class="dcl-login-eyebrow">DURGACURE · PRIVATE ACCESS</div>
+        <h2>Compliance Calendar</h2>
+        <p>Sign in to save and manage your compliance records.</p>
+        <form id="dcl-password-login">
+          <label for="dcl-username">Username</label>
+          <input id="dcl-username" value="Aditya" readonly autocomplete="username">
+          <label for="dcl-password">Password</label>
+          <div class="dcl-password-row"><input id="dcl-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Enter your password"><button type="button" id="dcl-reveal" aria-label="Show password">Show</button></div>
+          <button class="dcl-submit" type="submit">Sign in</button>
+          <button class="dcl-setup" id="dcl-create" type="button">First time? Set my password</button>
+          <div id="dcl-login-message" role="status" aria-live="polite"></div>
+        </form>
+      </div>`;
+      document.body.appendChild(overlay);
+      const password=overlay.querySelector("#dcl-password");
+      const msg=overlay.querySelector("#dcl-login-message");
+      const signIn=overlay.querySelector(".dcl-submit");
+      overlay.querySelector("#dcl-reveal").onclick=()=>{password.type=password.type==="password"?"text":"password";};
+      overlay.querySelector("#dcl-password-login").onsubmit=async(e)=>{
+        e.preventDefault(); signIn.disabled=true; msg.textContent="Signing in…";
+        const {error}=await sb.auth.signInWithPassword({email:"jalan.aditya30@gmail.com",password:password.value});
+        if(error){msg.textContent="Sign-in failed. Check your password or complete first-time setup.";signIn.disabled=false;}
+        else location.reload();
+      };
+      overlay.querySelector("#dcl-create").onclick=async()=>{
+        if(password.value.length<8){msg.textContent="Choose a password of at least 8 characters first.";return;}
+        const {error}=await sb.auth.signUp({email:"jalan.aditya30@gmail.com",password:password.value,options:{emailRedirectTo:location.origin+location.pathname}});
+        msg.textContent=error?"Setup failed: "+error.message:"Check your email for a confirmation link, then return here and sign in. If your account already exists, use its existing password or reset it from Supabase.";
+      };
+      setStoreUI("","<b>Private calendar.</b> Sign in as Aditya to view and save changes.");
+      renderAll(); return true;
     }
     const email=session.user.email;
     const {data:isPartner,error:partnerError}=await sb.rpc("dcl_is_partner");
