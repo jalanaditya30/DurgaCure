@@ -186,7 +186,7 @@ td.dd{font-family:var(--f-mono);white-space:nowrap;font-variant-numeric:tabular-
 
 <script>
 /* Supabase keys for the durgacure.com copy. Leave empty inside Claude (shared storage is used there). */
-window.DCL_SUPABASE = window.DCL_SUPABASE || { url: "", anonKey: "" };
+window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey: "sb_publishable_g6Y3RaWAH80dJ1uDNQxryA_itv0bcVr" };
 </script>
 <script>
 (function(){
@@ -363,6 +363,12 @@ window.DCL_SUPABASE = window.DCL_SUPABASE || { url: "", anonKey: "" };
       setStoreUI("", "<b>Sign in to see and save ticks.</b> Partners only.", f); renderAll(); return true;
     }
     const email=session.user.email;
+    const {data:isPartner,error:partnerError}=await sb.rpc("dcl_is_partner");
+    if(partnerError || !isPartner){
+      store={mode:"supabase-denied",canWrite:false,set:async()=>{}};
+      setStoreUI("","<b>Account not authorized to view or save compliance records.</b> Contact administrator.");
+      renderAll(); return true;
+    }
     const load=async()=>{ const {data,error}=await sb.from("compliance_status").select("key,status,updated_by,updated_at");
       if(error){ setStoreUI("local","<b>Signed in as "+email+", but this email isn't allowed.</b> Ask Aditya to add it."); return; }
       for(const k in status) delete status[k]; data.forEach(r=>status[r.key]={s:r.status,by:r.updated_by,at:r.updated_at}); renderAll(); };
