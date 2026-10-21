@@ -1,0 +1,28 @@
+name: DurgaCure Supabase Health Check
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check live database via public application config
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY'
+          import urllib.request, re, json, sys
+          url='https://raw.githubusercontent.com/jalanaditya30/DurgaCure/main/compliance/index.html'
+          source=urllib.request.urlopen(url,timeout=20).read().decode()
+          match=re.search(r'window.DCL_SUPABASE\s*=\s*\{\s*url:\s*"([^"]+)",\s*anonKey:\s*"([^"]+)"\s*\}',source)
+          if not match: sys.exit('Missing Supabase public config')
+          base,key=match.groups()
+          req=urllib.request.Request(base+'/rest/v1/healthcheck_ping?select=id&limit=1',headers={'apikey':key,'Accept':'application/json'})
+          data=json.load(urllib.request.urlopen(req,timeout=30))
+          if not data or data[0].get('id')!=1: sys.exit('Supabase heartbeat failed')
+          print('DurgaCure Supabase database query OK')
+          PY
