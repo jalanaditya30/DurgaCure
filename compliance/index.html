@@ -378,8 +378,8 @@ window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey
         <h2>Compliance Calendar</h2>
         <p>Sign in to save and manage your compliance records.</p>
         <form id="dcl-password-login">
-          <label for="dcl-username">Username</label>
-          <input id="dcl-username" value="Aditya" readonly autocomplete="username">
+          <label for="dcl-username">Email address</label>
+          <input id="dcl-username" type="email" required placeholder="Enter your email" autocomplete="username">
           <label for="dcl-password">Password</label>
           <div class="dcl-password-row"><input id="dcl-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Enter your password"><button type="button" id="dcl-reveal" aria-label="Show password">Show</button></div>
           <button class="dcl-submit" type="submit">Sign in</button>
@@ -389,21 +389,23 @@ window.DCL_SUPABASE = { url: "https://bbwejzhudaqyzadcmuav.supabase.co", anonKey
       </div>`;
       document.body.appendChild(overlay);
       const password=overlay.querySelector("#dcl-password");
+      const username=overlay.querySelector("#dcl-username");
       const msg=overlay.querySelector("#dcl-login-message");
       const signIn=overlay.querySelector(".dcl-submit");
       overlay.querySelector("#dcl-reveal").onclick=()=>{password.type=password.type==="password"?"text":"password";};
       overlay.querySelector("#dcl-password-login").onsubmit=async(e)=>{
         e.preventDefault(); signIn.disabled=true; msg.textContent="Signing in…";
-        const {error}=await sb.auth.signInWithPassword({email:"jalan.aditya30@gmail.com",password:password.value});
+        const {error}=await sb.auth.signInWithPassword({email:username.value.trim(),password:password.value});
         if(error){msg.textContent="Sign-in failed. Check your password or complete first-time setup.";signIn.disabled=false;}
         else location.reload();
       };
       overlay.querySelector("#dcl-create").onclick=async()=>{
+        if(!username.validity.valid){msg.textContent="Enter a valid email address.";return;}
         if(password.value.length<8){msg.textContent="Choose a password of at least 8 characters first.";return;}
         const {error}=await sb.auth.signUp({email:"jalan.aditya30@gmail.com",password:password.value,options:{emailRedirectTo:location.origin+location.pathname}});
         msg.textContent=error?"Setup failed: "+error.message:"Check your email for a confirmation link, then return here and sign in. If your account already exists, use its existing password or reset it from Supabase.";
       };
-      setStoreUI("","<b>Private calendar.</b> Sign in as Aditya to view and save changes.");
+      setStoreUI("","<b>Private calendar.</b> Sign in to view and save changes.");
       renderAll(); return true;
     }
     const email=session.user.email;
